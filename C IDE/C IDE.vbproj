@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>C_IDE</RootNamespace>
     <StartupObject>C_IDE.Form1</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
@@ -12,6 +12,12 @@
     <Import Include="System.Data" />
     <Import Include="System.Drawing" />
     <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.PowerShell.Native" Version="7.2.0-preview.2" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.0-preview.5" />
+    <PackageReference Include="System.Management.Automation" Version="7.2.0-preview.1" />
   </ItemGroup>
 
   <ItemGroup>
