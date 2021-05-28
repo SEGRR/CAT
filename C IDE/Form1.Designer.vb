@@ -29,7 +29,6 @@ Partial Class Form1
         Me.OpenDirectory = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.NewFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.Save = New System.Windows.Forms.ToolStripMenuItem()
         Me.Settings = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTool = New System.Windows.Forms.ToolStripMenuItem()
@@ -38,18 +37,20 @@ Partial Class Form1
         Me.RunTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.RunPreviewBox = New System.Windows.Forms.ToolStripTextBox()
         Me.Herracy = New System.Windows.Forms.TreeView()
+        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.OpenFileDialog = New System.Windows.Forms.OpenFileDialog()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.ToolBar.SuspendLayout()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'ToolBar
         '
-        Me.ToolBar.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.ToolBar.BackColor = System.Drawing.SystemColors.MenuHighlight
         Me.ToolBar.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.ToolBar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.filesTool, Me.SaveTool, Me.NewFIleTool, Me.BuildTool, Me.RunTool, Me.RunPreviewBox})
         Me.ToolBar.Location = New System.Drawing.Point(0, 0)
@@ -64,7 +65,7 @@ Partial Class Form1
         Me.filesTool.BackColor = System.Drawing.SystemColors.MenuBar
         Me.filesTool.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.filesTool.CheckOnClick = True
-        Me.filesTool.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenDirectory, Me.OpenFile, Me.NewFile, Me.ToolStripSeparator1, Me.Save, Me.Settings})
+        Me.filesTool.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenDirectory, Me.OpenFile, Me.NewFile, Me.Save, Me.Settings})
         Me.filesTool.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point)
         Me.filesTool.Image = CType(resources.GetObject("filesTool.Image"), System.Drawing.Image)
         Me.filesTool.Name = "filesTool"
@@ -73,6 +74,8 @@ Partial Class Form1
         '
         'OpenDirectory
         '
+        Me.OpenDirectory.BackColor = System.Drawing.SystemColors.MenuBar
+        Me.OpenDirectory.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
         Me.OpenDirectory.Image = CType(resources.GetObject("OpenDirectory.Image"), System.Drawing.Image)
         Me.OpenDirectory.Name = "OpenDirectory"
         Me.OpenDirectory.Size = New System.Drawing.Size(199, 26)
@@ -80,7 +83,9 @@ Partial Class Form1
         '
         'OpenFile
         '
+        Me.OpenFile.BackColor = System.Drawing.SystemColors.MenuBar
         Me.OpenFile.CheckOnClick = True
+        Me.OpenFile.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
         Me.OpenFile.Image = CType(resources.GetObject("OpenFile.Image"), System.Drawing.Image)
         Me.OpenFile.Name = "OpenFile"
         Me.OpenFile.Padding = New System.Windows.Forms.Padding(1)
@@ -89,18 +94,17 @@ Partial Class Form1
         '
         'NewFile
         '
+        Me.NewFile.BackColor = System.Drawing.SystemColors.MenuBar
+        Me.NewFile.ForeColor = System.Drawing.Color.Black
         Me.NewFile.Image = CType(resources.GetObject("NewFile.Image"), System.Drawing.Image)
         Me.NewFile.Name = "NewFile"
         Me.NewFile.Size = New System.Drawing.Size(199, 26)
         Me.NewFile.Text = "New File"
         '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(196, 6)
-        '
         'Save
         '
+        Me.Save.BackColor = System.Drawing.SystemColors.MenuBar
+        Me.Save.ForeColor = System.Drawing.Color.Black
         Me.Save.Image = CType(resources.GetObject("Save.Image"), System.Drawing.Image)
         Me.Save.Name = "Save"
         Me.Save.Size = New System.Drawing.Size(199, 26)
@@ -108,6 +112,8 @@ Partial Class Form1
         '
         'Settings
         '
+        Me.Settings.BackColor = System.Drawing.SystemColors.MenuBar
+        Me.Settings.ForeColor = System.Drawing.Color.Black
         Me.Settings.Image = CType(resources.GetObject("Settings.Image"), System.Drawing.Image)
         Me.Settings.Name = "Settings"
         Me.Settings.Size = New System.Drawing.Size(199, 26)
@@ -115,7 +121,7 @@ Partial Class Form1
         '
         'SaveTool
         '
-        Me.SaveTool.BackColor = System.Drawing.SystemColors.MenuBar
+        Me.SaveTool.BackColor = System.Drawing.SystemColors.Menu
         Me.SaveTool.Image = CType(resources.GetObject("SaveTool.Image"), System.Drawing.Image)
         Me.SaveTool.Margin = New System.Windows.Forms.Padding(5, 0, 0, 0)
         Me.SaveTool.Name = "SaveTool"
@@ -134,7 +140,7 @@ Partial Class Form1
         'BuildTool
         '
         Me.BuildTool.AutoToolTip = True
-        Me.BuildTool.BackColor = System.Drawing.Color.White
+        Me.BuildTool.BackColor = System.Drawing.SystemColors.MenuBar
         Me.BuildTool.ForeColor = System.Drawing.SystemColors.MenuBar
         Me.BuildTool.Image = CType(resources.GetObject("BuildTool.Image"), System.Drawing.Image)
         Me.BuildTool.Margin = New System.Windows.Forms.Padding(5, 0, 0, 0)
@@ -148,11 +154,13 @@ Partial Class Form1
         Me.RunTool.Image = CType(resources.GetObject("RunTool.Image"), System.Drawing.Image)
         Me.RunTool.Margin = New System.Windows.Forms.Padding(5, 0, 0, 0)
         Me.RunTool.Name = "RunTool"
+        Me.RunTool.ShortcutKeys = CType((System.Windows.Forms.Keys.Alt Or System.Windows.Forms.Keys.F1), System.Windows.Forms.Keys)
         Me.RunTool.Size = New System.Drawing.Size(34, 27)
+        Me.RunTool.ToolTipText = "Build + Run " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Alt+F1)"
         '
         'RunPreviewBox
         '
-        Me.RunPreviewBox.BackColor = System.Drawing.SystemColors.MenuBar
+        Me.RunPreviewBox.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.RunPreviewBox.Margin = New System.Windows.Forms.Padding(5, 0, 1, 0)
         Me.RunPreviewBox.Name = "RunPreviewBox"
         Me.RunPreviewBox.ReadOnly = True
@@ -160,23 +168,47 @@ Partial Class Form1
         '
         'Herracy
         '
-        Me.Herracy.BackColor = System.Drawing.SystemColors.MenuBar
-        Me.Herracy.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Herracy.CheckBoxes = True
+        Me.Herracy.BackColor = System.Drawing.SystemColors.Window
+        Me.Herracy.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.Herracy.Dock = System.Windows.Forms.DockStyle.Left
-        Me.Herracy.LineColor = System.Drawing.Color.SandyBrown
+        Me.Herracy.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
+        Me.Herracy.ImageIndex = 0
+        Me.Herracy.ImageList = Me.ImageList1
+        Me.Herracy.ItemHeight = 30
+        Me.Herracy.LineColor = System.Drawing.Color.Red
         Me.Herracy.Location = New System.Drawing.Point(0, 31)
         Me.Herracy.Name = "Herracy"
-        Me.Herracy.Size = New System.Drawing.Size(151, 584)
+        Me.Herracy.SelectedImageKey = "c++.png"
+        Me.Herracy.ShowLines = False
+        Me.Herracy.Size = New System.Drawing.Size(175, 584)
         Me.Herracy.TabIndex = 2
+        '
+        'ImageList1
+        '
+        Me.ImageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit
+        Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
+        Me.ImageList1.TransparentColor = System.Drawing.Color.Transparent
+        Me.ImageList1.Images.SetKeyName(0, "c++.png")
+        Me.ImageList1.Images.SetKeyName(1, "java.png")
+        Me.ImageList1.Images.SetKeyName(2, "html.png")
+        Me.ImageList1.Images.SetKeyName(3, "javascript.png")
+        Me.ImageList1.Images.SetKeyName(4, "json.png")
+        Me.ImageList1.Images.SetKeyName(5, "txt.png")
+        Me.ImageList1.Images.SetKeyName(6, "python.png")
+        Me.ImageList1.Images.SetKeyName(7, "directory.png")
+        Me.ImageList1.Images.SetKeyName(8, "c.png")
+        Me.ImageList1.Images.SetKeyName(9, "exe.png")
+        Me.ImageList1.Images.SetKeyName(10, "unknown.png")
         '
         'TabControl1
         '
         Me.TabControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabControl1.Location = New System.Drawing.Point(151, 31)
+        Me.TabControl1.ImageList = Me.ImageList1
+        Me.TabControl1.Location = New System.Drawing.Point(175, 31)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(896, 584)
+        Me.TabControl1.ShowToolTips = True
+        Me.TabControl1.Size = New System.Drawing.Size(872, 584)
         Me.TabControl1.TabIndex = 3
         '
         'OpenFileDialog
@@ -191,6 +223,14 @@ Partial Class Form1
         'ErrorProvider1
         '
         Me.ErrorProvider1.ContainerControl = Me
+        '
+        'ToolTip1
+        '
+        Me.ToolTip1.AutoPopDelay = 500
+        Me.ToolTip1.InitialDelay = 500
+        Me.ToolTip1.ReshowDelay = 100
+        Me.ToolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
+        Me.ToolTip1.ToolTipTitle = "TIp"
         '
         'Form1
         '
@@ -225,7 +265,6 @@ Partial Class Form1
     Friend WithEvents TabControl1 As TabControl
     Friend WithEvents OpenFileDialog As OpenFileDialog
     Friend WithEvents SaveFileDialog1 As SaveFileDialog
-    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents NewFIleTool As ToolStripMenuItem
     Friend WithEvents RunPreviewBox As ToolStripTextBox
     Friend WithEvents RunTool As ToolStripMenuItem
@@ -233,4 +272,6 @@ Partial Class Form1
     Friend WithEvents ErrorProvider1 As ErrorProvider
     Friend WithEvents OpenDirectory As ToolStripMenuItem
     Friend WithEvents BuildTool As ToolStripMenuItem
+    Friend WithEvents ToolTip1 As ToolTip
+    Friend WithEvents ImageList1 As ImageList
 End Class

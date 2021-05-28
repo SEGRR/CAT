@@ -60,26 +60,30 @@ Public Class Form1
     End Sub
 
     Private Sub CompileProgram(sender As Object, e As EventArgs) Handles BuildTool.Click
+        If OpenTabs.Count = 0 Then
+            MessageBox.Show("No Files are selected to Build , Open a file First by double Clicking File name in the Herracy ", "No file Found ", MessageBoxButtons.OK)
+        Else
+            Dim fileName As String = TabControl1.SelectedTab.Text
+            Try
+                Dim fileInformation As FileInfo = Findfileinfo(fileName)
+                Dim filePath As String = fileInformation.FullName
+                Dim command = "PowerShell -NoExit g++ -o" + filePath
+                RunPreviewBox.Text = fileName
+                Shell(command, AppWinStyle.NormalFocus)
 
-        Dim fileName As String = TabControl1.SelectedTab.Text
-        Try
-            Dim fileInformation As FileInfo = Findfileinfo(fileName)
-            Dim filePath As String = fileInformation.FullName
-            Dim command = "PowerShell -NoExit g++ -o" + filePath
-            RunPreviewBox.Text = fileName
-            Shell(command, AppWinStyle.NormalFocus)
+            Catch returnedNull As Exception
 
-        Catch returnedNull As Exception
+            End Try
 
-        End Try
-
-
+        End If
 
     End Sub
     Private Sub RunProgram(sender As Object, e As EventArgs) Handles RunTool.Click
 
-
-        Dim fileName As String = TabControl1.SelectedTab.Text
+        If OpenTabs.Count = 0 Then
+            MessageBox.Show("No Files are selected to Run , Open a file First by double Clicking File name in the Herracy ", "No file Found ", MessageBoxButtons.OK)
+        Else
+            Dim fileName As String = TabControl1.SelectedTab.Text
             Dim fileInformation As FileInfo = Findfileinfo(fileName)
             Dim filePath As String = fileInformation.DirectoryName
             Dim filenameWithoutExtention = fileInformation.Name.Replace(".cpp", "")
@@ -88,7 +92,7 @@ Public Class Form1
             RunPreviewBox.Text = fileName
             Shell(command, AppWinStyle.NormalFocus)
 
-
+        End If
 
 
     End Sub
@@ -96,19 +100,55 @@ Public Class Form1
 
 
         OpenFileDialog.InitialDirectory = Directory.GetCurrentDirectory()
+        OpenFileDialog.Multiselect = True
         If OpenFileDialog.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
 
+            Dim selectedFiles As String() = OpenFileDialog.FileNames
 
-            Try
-                '  RichTextBox1.LoadFile(OpenFileDialog.FileName, RichTextBoxStreamType.PlainText)
-            Catch fileopener As Exception
-                MessageBox.Show("error ! could not open file ")
-            End Try
+            For Each file As String In selectedFiles
+
+            Next
+
 
         End If
     End Sub
 
-    Private Sub ss(sender As Object, e As EventArgs) Handles Me.Closing
+    Private Sub ss(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles Me.Closing
+
+        If OpenTabs.Count = 0 Then
+            e.Cancel = False
+        Else
+
+            Dim unsavedTabs As List(Of TabWizard) = New List(Of TabWizard)
+            Dim tabs As TabWizard
+            Dim anyUnsavedFile As Boolean = False
+            For Each tabs In OpenTabs
+
+                If Not tabs.IsSaved Then
+                    unsavedTabs.Add(tabs)
+                    anyUnsavedFile = True
+                End If
+            Next
+
+            ' Dim FileNames As String = ""
+            ' For Each tabs In unsavedTabs
+            ' FileNames.Append(tabs.filename).Append(" ,")
+            ' Next
+            If anyUnsavedFile Then
+                Dim result = MessageBox.Show("Do you want save Them ", "Some Files  are not saved", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)
+
+                If result = DialogResult.Yes Then
+                    For Each tabs In unsavedTabs
+                        tabs.SaveFileWithoutMessage()
+                    Next
+                    e.Cancel = False
+                ElseIf result = DialogResult.Cancel Then
+                    e.Cancel = True
+                ElseIf result = DialogResult.No Then
+                    e.Cancel = False
+                End If
+            End If
+        End If
 
     End Sub
 
@@ -118,6 +158,7 @@ Public Class Form1
 
     End Sub
     Private Sub Open_Directory_click(sender As Object, e As EventArgs) Handles OpenDirectory.Click
+
 
         FolderBrowserDialog1.Description = "open A directory"
         FolderBrowserDialog1.ShowNewFolderButton = True
@@ -130,7 +171,7 @@ Public Class Form1
         Dim NewDirectory As FileHandler = New FileHandler(directoryPath)
 
         NewDirectory.CreateTreeView(Herracy)
-        Controls.Add(Herracy)
+        ' Controls.Add(Herracy)
 
         OpenDirectories.Add(NewDirectory)
 
@@ -160,6 +201,7 @@ Public Class Form1
 
         TabControl1.TabPages.Add(NewTab.tab_page)
         TabControl1.SelectedTab = NewTab.tab_page
+        TabControl1.SelectedTab.ImageIndex = Herracy.SelectedNode.ImageIndex
         NewTab.CreateAndLoadTextBox()
         OpenTabs.Add(NewTab)
 
@@ -168,28 +210,7 @@ Public Class Form1
 
     End Sub
 
-    Function runProgram(ByVal script As String) As String    ' Remove this Function V1.2
 
-        Dim runspace As Runspace
-        runspace = RunspaceFactory.CreateRunspace() ' throwing exception
-        runspace.Open()
-        Dim pipeline As Pipeline = runspace.CreatePipeline()
-        pipeline.Commands.AddScript(script)
-        pipeline.Commands.Add("Out-Script")
-
-        Dim output As Collection(Of Management.Automation.PSObject) = New Collection(Of Management.Automation.PSObject)
-        output = pipeline.Invoke()
-        runspace.Close()
-        Dim stringbuilder As StringBuilder = New StringBuilder()
-
-        For Each ps As Management.Automation.PSObject In output
-            stringbuilder.AppendLine(ps.ToString())
-        Next
-
-
-        Return stringbuilder.ToString()
-
-    End Function  'remove this Function 
 
 
 End Class
@@ -242,7 +263,14 @@ Class TabWizard  ' this clsss will handle file opning in  tabs in tab Control an
         IsSaved = True
     End Sub
 
-
+    Sub SaveFileWithoutMessage()
+        Try
+            textbox.SaveFile(fileinfo.FullName, RichTextBoxStreamType.PlainText)
+        Catch s As Exception
+            MessageBox.Show("Error : couldn't save file")
+        End Try
+        IsSaved = True
+    End Sub
 
 
 
@@ -267,16 +295,47 @@ Class FileHandler
         Dim nodecount = localTree.GetNodeCount(False)
         localTree.CollapseAll()
         Dim file As FileInfo
+
         localTree.Nodes.Add(Directory_name)
+        localTree.Nodes(nodecount).ImageIndex = 7                   '   localTree.Nodes(nodecount).Nodes.Add(file.Name)
         For Each file In directoryFiles
 
-            localTree.Nodes(nodecount).Nodes.Add(file.Name)
+            Dim ext = file.Extension
+            Dim treenode = New TreeNode()
+            Dim imageindex As Integer
+            treenode.Text = file.Name
+            Select Case ext
+                Case ".cpp"
+                    imageindex = 0
+                Case ".java"
+                    imageindex = 1
+                Case ".html"
+                    imageindex = 2
+                Case ".js"
+                    imageindex = 3
+                Case ".json"
+                    imageindex = 4
+                Case ".txt"
+                    imageindex = 5
+                Case ".py"
+                    imageindex = 6
+                Case ".c"
+                    imageindex = 7
+                Case ".exe"
+                    imageindex = 8
+                Case Else
+                    imageindex = 9
+            End Select
+
+            localTree.Nodes(nodecount).Nodes.Add(file.Name, file.Name, imageindex, imageindex)
 
         Next
 
+    End Sub
 
-
-
+    Public Sub updateTreeView(ByRef herracy As TreeView, filename As String)
+        Dim directoryIndex = herracy.Nodes.IndexOfKey(Me.Directory_name)
+        herracy.Nodes(directoryIndex).Nodes.Add(filename)
     End Sub
 
     Public Function findFile(ByVal fileName As String) As FileInfo
@@ -291,4 +350,6 @@ Class FileHandler
 
         Return Nothing
     End Function
+
+
 End Class
