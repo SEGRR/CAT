@@ -30,21 +30,32 @@ Partial Class Form1
         Me.OpenFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.NewFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.Save = New System.Windows.Forms.ToolStripMenuItem()
-        Me.Settings = New System.Windows.Forms.ToolStripMenuItem()
+        Me.settings = New System.Windows.Forms.ToolStripMenuItem()
+        Me.hideherracyOption = New System.Windows.Forms.ToolStripMenuItem()
+        Me.quit = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.NewFIleTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.BuildTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.RunTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.RunPreviewBox = New System.Windows.Forms.ToolStripTextBox()
         Me.Herracy = New System.Windows.Forms.TreeView()
+        Me.directoryOptions = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.OpenDirectoryMenuStrip = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExpandOption = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CollapseOption = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HideHerracy = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.TabControl1 = New System.Windows.Forms.TabControl()
+        Me.tabOptions = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.closeTabContextMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenFileDialog = New System.Windows.Forms.OpenFileDialog()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.ToolBar.SuspendLayout()
+        Me.directoryOptions.SuspendLayout()
+        Me.tabOptions.SuspendLayout()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -65,7 +76,7 @@ Partial Class Form1
         Me.filesTool.BackColor = System.Drawing.SystemColors.MenuBar
         Me.filesTool.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.filesTool.CheckOnClick = True
-        Me.filesTool.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenDirectory, Me.OpenFile, Me.NewFile, Me.Save, Me.Settings})
+        Me.filesTool.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenDirectory, Me.OpenFile, Me.NewFile, Me.Save, Me.settings})
         Me.filesTool.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point)
         Me.filesTool.Image = CType(resources.GetObject("filesTool.Image"), System.Drawing.Image)
         Me.filesTool.Name = "filesTool"
@@ -110,14 +121,25 @@ Partial Class Form1
         Me.Save.Size = New System.Drawing.Size(199, 26)
         Me.Save.Text = "Save"
         '
-        'Settings
+        'settings
         '
-        Me.Settings.BackColor = System.Drawing.SystemColors.MenuBar
-        Me.Settings.ForeColor = System.Drawing.Color.Black
-        Me.Settings.Image = CType(resources.GetObject("Settings.Image"), System.Drawing.Image)
-        Me.Settings.Name = "Settings"
-        Me.Settings.Size = New System.Drawing.Size(199, 26)
-        Me.Settings.Text = "Settings"
+        Me.settings.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.hideherracyOption, Me.quit})
+        Me.settings.Image = CType(resources.GetObject("settings.Image"), System.Drawing.Image)
+        Me.settings.Name = "settings"
+        Me.settings.Size = New System.Drawing.Size(199, 26)
+        Me.settings.Text = "Options "
+        '
+        'hideherracyOption
+        '
+        Me.hideherracyOption.Name = "hideherracyOption"
+        Me.hideherracyOption.Size = New System.Drawing.Size(182, 26)
+        Me.hideherracyOption.Text = "Hide Herracy"
+        '
+        'quit
+        '
+        Me.quit.Name = "quit"
+        Me.quit.Size = New System.Drawing.Size(182, 26)
+        Me.quit.Text = "Quit"
         '
         'SaveTool
         '
@@ -170,10 +192,13 @@ Partial Class Form1
         '
         Me.Herracy.BackColor = System.Drawing.SystemColors.Window
         Me.Herracy.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.Herracy.ContextMenuStrip = Me.directoryOptions
         Me.Herracy.Dock = System.Windows.Forms.DockStyle.Left
         Me.Herracy.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
+        Me.Herracy.HideSelection = False
         Me.Herracy.ImageIndex = 0
         Me.Herracy.ImageList = Me.ImageList1
+        Me.Herracy.ImeMode = System.Windows.Forms.ImeMode.Close
         Me.Herracy.ItemHeight = 30
         Me.Herracy.LineColor = System.Drawing.Color.Red
         Me.Herracy.Location = New System.Drawing.Point(0, 31)
@@ -183,9 +208,43 @@ Partial Class Form1
         Me.Herracy.Size = New System.Drawing.Size(175, 584)
         Me.Herracy.TabIndex = 2
         '
+        'directoryOptions
+        '
+        Me.directoryOptions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
+        Me.directoryOptions.DropShadowEnabled = False
+        Me.directoryOptions.ImageScalingSize = New System.Drawing.Size(20, 20)
+        Me.directoryOptions.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenDirectoryMenuStrip, Me.ExpandOption, Me.CollapseOption, Me.HideHerracy})
+        Me.directoryOptions.Name = "ContextMenuStrip1"
+        Me.directoryOptions.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional
+        Me.directoryOptions.Size = New System.Drawing.Size(178, 100)
+        '
+        'OpenDirectoryMenuStrip
+        '
+        Me.OpenDirectoryMenuStrip.Name = "OpenDirectoryMenuStrip"
+        Me.OpenDirectoryMenuStrip.Size = New System.Drawing.Size(177, 24)
+        Me.OpenDirectoryMenuStrip.Text = "open Directory"
+        '
+        'ExpandOption
+        '
+        Me.ExpandOption.Name = "ExpandOption"
+        Me.ExpandOption.Size = New System.Drawing.Size(177, 24)
+        Me.ExpandOption.Text = "Expand"
+        '
+        'CollapseOption
+        '
+        Me.CollapseOption.Name = "CollapseOption"
+        Me.CollapseOption.Size = New System.Drawing.Size(177, 24)
+        Me.CollapseOption.Text = "Collapse "
+        '
+        'HideHerracy
+        '
+        Me.HideHerracy.Name = "HideHerracy"
+        Me.HideHerracy.Size = New System.Drawing.Size(177, 24)
+        Me.HideHerracy.Text = "Hide "
+        '
         'ImageList1
         '
-        Me.ImageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit
+        Me.ImageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
         Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
         Me.ImageList1.TransparentColor = System.Drawing.Color.Transparent
         Me.ImageList1.Images.SetKeyName(0, "c++.png")
@@ -202,6 +261,7 @@ Partial Class Form1
         '
         'TabControl1
         '
+        Me.TabControl1.ContextMenuStrip = Me.tabOptions
         Me.TabControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabControl1.ImageList = Me.ImageList1
         Me.TabControl1.Location = New System.Drawing.Point(175, 31)
@@ -210,6 +270,27 @@ Partial Class Form1
         Me.TabControl1.ShowToolTips = True
         Me.TabControl1.Size = New System.Drawing.Size(872, 584)
         Me.TabControl1.TabIndex = 3
+        '
+        'tabOptions
+        '
+        Me.tabOptions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
+        Me.tabOptions.DropShadowEnabled = False
+        Me.tabOptions.ImageScalingSize = New System.Drawing.Size(20, 20)
+        Me.tabOptions.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.closeTabContextMenuItem})
+        Me.tabOptions.Name = "ContextMenuStrip1"
+        Me.tabOptions.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional
+        Me.tabOptions.ShowImageMargin = False
+        Me.tabOptions.Size = New System.Drawing.Size(107, 28)
+        '
+        'closeTabContextMenuItem
+        '
+        Me.closeTabContextMenuItem.BackColor = System.Drawing.SystemColors.Window
+        Me.closeTabContextMenuItem.Name = "closeTabContextMenuItem"
+        Me.closeTabContextMenuItem.ShortcutKeyDisplayString = ""
+        Me.closeTabContextMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.R), System.Windows.Forms.Keys)
+        Me.closeTabContextMenuItem.ShowShortcutKeys = False
+        Me.closeTabContextMenuItem.Size = New System.Drawing.Size(106, 24)
+        Me.closeTabContextMenuItem.Text = "Close tab"
         '
         'OpenFileDialog
         '
@@ -248,6 +329,8 @@ Partial Class Form1
         Me.Text = "CAT"
         Me.ToolBar.ResumeLayout(False)
         Me.ToolBar.PerformLayout()
+        Me.directoryOptions.ResumeLayout(False)
+        Me.tabOptions.ResumeLayout(False)
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -259,7 +342,6 @@ Partial Class Form1
     Friend WithEvents OpenFile As ToolStripMenuItem
     Friend WithEvents NewFile As ToolStripMenuItem
     Friend WithEvents Save As ToolStripMenuItem
-    Friend WithEvents Settings As ToolStripMenuItem
     Friend WithEvents SaveTool As ToolStripMenuItem
     Friend WithEvents Herracy As TreeView
     Friend WithEvents TabControl1 As TabControl
@@ -274,4 +356,14 @@ Partial Class Form1
     Friend WithEvents BuildTool As ToolStripMenuItem
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents ImageList1 As ImageList
+    Friend WithEvents closeTabContextMenuItem As ToolStripMenuItem
+    Public WithEvents tabOptions As ContextMenuStrip
+    Public WithEvents directoryOptions As ContextMenuStrip
+    Friend WithEvents ExpandOption As ToolStripMenuItem
+    Friend WithEvents CollapseOption As ToolStripMenuItem
+    Friend WithEvents OpenDirectoryMenuStrip As ToolStripMenuItem
+    Friend WithEvents HideHerracy As ToolStripMenuItem
+    Friend WithEvents settings As ToolStripMenuItem
+    Friend WithEvents hideherracyOption As ToolStripMenuItem
+    Friend WithEvents quit As ToolStripMenuItem
 End Class

@@ -9,7 +9,35 @@ Public Class Form1
 
     Dim OpenTabs As List(Of TabWizard) = New List(Of TabWizard)
     Dim OpenDirectories As List(Of FileHandler) = New List(Of FileHandler)
+    Dim OpenFIles As List(Of FileInfo) = New List(Of FileInfo)
 
+    Private Sub newFile_creator(sender As Object, e As EventArgs) Handles NewFIleTool.Click, NewFile.Click
+
+        OpenFileDialog.Title = " New File "
+
+        If OpenFileDialog.ShowDialog() = DialogResult.OK Then
+
+            Dim filename = OpenFileDialog.FileName
+            ' MsgBox(filename)
+            Dim fileinfo = New FileInfo(filename)
+            Dim newtab As TabWizard = New TabWizard(fileinfo.Name, fileinfo)
+            TabControl1.TabPages.Add(newtab.tab_page)
+
+            TabControl1.SelectedTab = newtab.tab_page
+
+            RunPreviewBox.Text = fileinfo.FullName
+
+            TabControl1.SelectedTab.ContextMenuStrip = tabOptions
+
+            TabControl1.SelectedTab.ImageIndex = getImageIndex(fileinfo.Extension)
+
+            newtab.CreateAndLoadTextBox()
+
+            OpenTabs.Add(newtab)
+        End If
+
+
+    End Sub
 
     Function Findfileinfo(ByVal findThisFile As String) As FileInfo
 
@@ -29,19 +57,6 @@ Public Class Form1
         Return Nothing
     End Function
 
-
-
-    Private Sub TabPage1_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub ToolBar_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles ToolBar.ItemClicked
-
-    End Sub
-
-    Private Sub TabPage1_Click_1(sender As Object, e As EventArgs)
-
-    End Sub
 
     Private Sub SaveTool_Clicked(sender As Object, e As EventArgs) Handles SaveTool.Click
 
@@ -63,7 +78,7 @@ Public Class Form1
         If OpenTabs.Count = 0 Then
             MessageBox.Show("No Files are selected to Build , Open a file First by double Clicking File name in the Herracy ", "No file Found ", MessageBoxButtons.OK)
         Else
-            Dim fileName As String = TabControl1.SelectedTab.Text
+            Dim fileName As String = RunPreviewBox.Text
             Try
                 Dim fileInformation As FileInfo = Findfileinfo(fileName)
                 Dim filePath As String = fileInformation.FullName
@@ -80,10 +95,10 @@ Public Class Form1
     End Sub
     Private Sub RunProgram(sender As Object, e As EventArgs) Handles RunTool.Click
 
-        If OpenTabs.Count = 0 Then
+        If OpenTabs.Count = 0 Or RunPreviewBox.Text Is Nothing Then
             MessageBox.Show("No Files are selected to Run , Open a file First by double Clicking File name in the Herracy ", "No file Found ", MessageBoxButtons.OK)
         Else
-            Dim fileName As String = TabControl1.SelectedTab.Text
+            Dim fileName As String = RunPreviewBox.Text
             Dim fileInformation As FileInfo = Findfileinfo(fileName)
             Dim filePath As String = fileInformation.DirectoryName
             Dim filenameWithoutExtention = fileInformation.Name.Replace(".cpp", "")
@@ -96,22 +111,9 @@ Public Class Form1
 
 
     End Sub
-    Private Sub openFile_clicked(sender As Object, e As EventArgs) Handles OpenFile.Click
 
 
-        OpenFileDialog.InitialDirectory = Directory.GetCurrentDirectory()
-        OpenFileDialog.Multiselect = True
-        If OpenFileDialog.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
 
-            Dim selectedFiles As String() = OpenFileDialog.FileNames
-
-            For Each file As String In selectedFiles
-
-            Next
-
-
-        End If
-    End Sub
 
     Private Sub ss(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles Me.Closing
 
@@ -157,24 +159,26 @@ Public Class Form1
 
 
     End Sub
-    Private Sub Open_Directory_click(sender As Object, e As EventArgs) Handles OpenDirectory.Click
+    Private Sub Open_Directory_click(sender As Object, e As EventArgs) Handles OpenDirectory.Click, OpenDirectoryMenuStrip.Click
 
 
         FolderBrowserDialog1.Description = "open A directory"
         FolderBrowserDialog1.ShowNewFolderButton = True
-        FolderBrowserDialog1.ShowDialog()
+        If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
 
-        'ReDim OpenDirectories(OpenDirectories.Length + 1)
 
-        Dim directoryPath = FolderBrowserDialog1.SelectedPath
 
-        Dim NewDirectory As FileHandler = New FileHandler(directoryPath)
+            'ReDim OpenDirectories(OpenDirectories.Length + 1)
 
-        NewDirectory.CreateTreeView(Herracy)
-        ' Controls.Add(Herracy)
+            Dim directoryPath = FolderBrowserDialog1.SelectedPath
 
-        OpenDirectories.Add(NewDirectory)
+            Dim NewDirectory As FileHandler = New FileHandler(directoryPath)
 
+            NewDirectory.CreateTreeView(Herracy)
+            ' Controls.Add(Herracy)
+            Herracy.SelectedNode = Herracy.Nodes(0)
+            OpenDirectories.Add(NewDirectory)
+        End If
     End Sub
 
     Private Sub get_file_to_tabs(sender As Object, e As EventArgs) Handles Herracy.NodeMouseDoubleClick
@@ -200,9 +204,17 @@ Public Class Form1
         NewTab = New TabWizard(selectedFile, fileinfo)
 
         TabControl1.TabPages.Add(NewTab.tab_page)
+
         TabControl1.SelectedTab = NewTab.tab_page
+
+        RunPreviewBox.Text = fileinfo.FullName
+
+        TabControl1.SelectedTab.ContextMenuStrip = tabOptions
+
         TabControl1.SelectedTab.ImageIndex = Herracy.SelectedNode.ImageIndex
+
         NewTab.CreateAndLoadTextBox()
+
         OpenTabs.Add(NewTab)
 
 
@@ -210,6 +222,138 @@ Public Class Form1
 
     End Sub
 
+    Private Function getImageIndex(ext As String) As Integer
+        Dim imageindex As Integer
+        Select Case ext
+            Case ".cpp"
+                imageindex = 0
+            Case ".java"
+                imageindex = 1
+            Case ".html"
+                imageindex = 2
+            Case ".js"
+                imageindex = 3
+            Case ".json"
+                imageindex = 4
+            Case ".txt"
+                imageindex = 5
+            Case ".py"
+                imageindex = 6
+            Case ".c"
+                imageindex = 7
+            Case ".exe"
+                imageindex = 8
+            Case Else
+                imageindex = 9
+        End Select
+        Return imageindex
+    End Function
+
+    Private Sub CloseTab(sender As System.Object, e As System.EventArgs) Handles closeTabContextMenuItem.Click
+
+
+        Dim file As String = TabControl1.SelectedTab.Text
+        Dim tab As TabWizard
+
+        For Each tab In OpenTabs
+            If tab.filename.Equals(file) Then
+                tab.SaveFile()
+                OpenTabs.Remove(tab)
+                TabControl1.TabPages.Remove(tab.tab_page)
+                Exit For
+            End If
+
+
+        Next
+
+
+
+
+    End Sub
+
+
+    Private Sub collapseTreenode(sender As Object, e As EventArgs) Handles CollapseOption.Click
+
+        Herracy.CollapseAll()
+
+    End Sub
+
+    Private Sub exapandTreenode(sender As Object, e As EventArgs) Handles ExpandOption.Click
+
+        Herracy.ExpandAll()
+
+    End Sub
+
+
+
+
+    Private Function getDirectoryInfo(ByVal directoryName As String) As Integer
+
+        For Each directory As FileHandler In OpenDirectories
+
+            If directory.Directory_name.Equals(directoryName) Then
+
+                Return OpenDirectories.IndexOf(directory)
+
+
+            End If
+
+        Next
+
+        Return Nothing
+
+    End Function
+
+    Private Sub tabselect(sender As Object, e As EventArgs) Handles TabControl1.Selected
+        If OpenTabs.Count <> 0 Then
+            RunPreviewBox.Text = Findfileinfo(TabControl1.SelectedTab.Text).FullName
+        Else
+            RunPreviewBox.Text = ""
+        End If
+    End Sub
+
+    Private Sub herracy_hide(sender As Object, e As EventArgs) Handles HideHerracy.CheckedChanged, hideherracyOption.CheckedChanged
+
+        If HideHerracy.Checked = True Or hideherracyOption.Checked = True Then
+            Herracy.Hide()
+            hideherracyOption.Text = "Unhide Herracy"
+            ' hideherracyOption.Checked = True
+            ' HideHerracy.Checked = True
+        ElseIf HideHerracy.Checked = False Or hideherracyOption.Checked = False Then
+            Herracy.Show()
+            hideherracyOption.Text = "Hide Herracy "
+            'hideherracyOption.Checked = False
+            ' HideHerracy.Checked = False
+        End If
+
+    End Sub
+
+    Private Sub hideHerracy_click(sender As Object, e As EventArgs) Handles HideHerracy.Click
+        If HideHerracy.Checked = False Then
+            HideHerracy.Checked = True
+            hideherracyOption.Checked = True
+        Else
+            HideHerracy.Checked = False
+            hideherracyOption.Checked = False
+        End If
+    End Sub
+
+    Private Sub hideHerracyoption_click(sender As Object, e As EventArgs) Handles hideherracyOption.Click
+        If hideherracyOption.Checked = False Then
+            hideherracyOption.Checked = True
+            HideHerracy.Checked = True
+        Else
+            hideherracyOption.Checked = False
+            HideHerracy.Checked = False
+        End If
+    End Sub
+
+
+    Private Sub quit_cat(sender As Object, e As EventArgs) Handles quit.Click
+
+        Me.Close()
+
+    End Sub
 
 
 
@@ -229,11 +373,13 @@ Class TabWizard  ' this clsss will handle file opning in  tabs in tab Control an
     'pblic IsAllocated As Boolean
 
     Sub New(ByVal fname As String, ByVal FileInformation As IO.FileInfo)
+
         filename = fname
         tab_page = New TabPage()          'it will genrate a new tab_page that can be then added into herracy 
         'set tab properties 
         tab_page.Text = filename              'set its title as file name
         tab_page.Name = "tab_page"
+
         ' tab_page.Padding.Left = 5
 
         IsSaved = False                       'at beginning file is not saved
@@ -248,7 +394,7 @@ Class TabWizard  ' this clsss will handle file opning in  tabs in tab Control an
         Try
             textbox.LoadFile(fileinfo.FullName, RichTextBoxStreamType.PlainText)
         Catch e As Exception
-            MessageBox.Show(" Error : File not found ")
+            MessageBox.Show(" Error : File Not found ")
 
         End Try
 
@@ -261,6 +407,7 @@ Class TabWizard  ' this clsss will handle file opning in  tabs in tab Control an
             MessageBox.Show("Error : couldn't save file")
         End Try
         IsSaved = True
+
     End Sub
 
     Sub SaveFileWithoutMessage()
@@ -295,9 +442,13 @@ Class FileHandler
         Dim nodecount = localTree.GetNodeCount(False)
         localTree.CollapseAll()
         Dim file As FileInfo
-
+        Dim obj As Form1 = New Form1()
         localTree.Nodes.Add(Directory_name)
-        localTree.Nodes(nodecount).ImageIndex = 7                   '   localTree.Nodes(nodecount).Nodes.Add(file.Name)
+        localTree.Nodes(nodecount).ImageIndex = 7
+        localTree.Nodes(nodecount).SelectedImageIndex = 7
+        ' localTree.Nodes(nodecount).ContextMenuStrip = obj.directoryOptions
+
+        '   localTree.Nodes(nodecount).Nodes.Add(file.Name)
         For Each file In directoryFiles
 
             Dim ext = file.Extension
@@ -334,10 +485,18 @@ Class FileHandler
     End Sub
 
     Public Sub updateTreeView(ByRef herracy As TreeView, filename As String)
+
         Dim directoryIndex = herracy.Nodes.IndexOfKey(Me.Directory_name)
         herracy.Nodes(directoryIndex).Nodes.Add(filename)
     End Sub
 
+    Public Sub updateDirectory(ByRef herracy As TreeView, ByVal newName As String, ByVal newPath As String)
+
+
+        Me.openDirectory.Refresh()
+        herracy.SelectedNode.Text = newName
+
+    End Sub
     Public Function findFile(ByVal fileName As String) As FileInfo
 
         Dim file As FileInfo
@@ -352,4 +511,6 @@ Class FileHandler
     End Function
 
 
+
 End Class
+
