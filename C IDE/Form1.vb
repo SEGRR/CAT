@@ -1,9 +1,4 @@
-﻿
-Imports System.Collections.ObjectModel
-Imports System.IO
-Imports System.Management.Automation.Runspaces
-Imports System.Text
-Imports Microsoft.PowerShell
+﻿Imports System.IO
 
 Public Class Form1
 
@@ -11,7 +6,7 @@ Public Class Form1
     Dim OpenDirectories As List(Of FileHandler) = New List(Of FileHandler)
     Dim OpenFIles As List(Of FileInfo) = New List(Of FileInfo)
 
-    Private Sub newFile_creator(sender As Object, e As EventArgs) Handles NewFIleTool.Click, NewFile.Click
+    Private Sub newFile_creator(sender As Object, e As EventArgs) Handles NewFIleTool.Click, OpenFile.Click
 
         OpenFileDialog.Title = " New File "
 
@@ -74,43 +69,51 @@ Public Class Form1
 
     End Sub
 
-    Private Sub CompileProgram(sender As Object, e As EventArgs) Handles BuildTool.Click
-        If OpenTabs.Count = 0 Then
-            MessageBox.Show("No Files are selected to Build , Open a file First by double Clicking File name in the Herracy ", "No file Found ", MessageBoxButtons.OK)
-        Else
-            Dim fileName As String = RunPreviewBox.Text
-            Try
-                Dim fileInformation As FileInfo = Findfileinfo(fileName)
-                Dim filePath As String = fileInformation.FullName
-                Dim command = "PowerShell -NoExit g++ -o" + filePath
-                RunPreviewBox.Text = fileName
-                Shell(command, AppWinStyle.NormalFocus)
 
-            Catch returnedNull As Exception
-
-            End Try
-
-        End If
-
-    End Sub
     Private Sub RunProgram(sender As Object, e As EventArgs) Handles RunTool.Click
 
         If OpenTabs.Count = 0 Or RunPreviewBox.Text Is Nothing Then
             MessageBox.Show("No Files are selected to Run , Open a file First by double Clicking File name in the Herracy ", "No file Found ", MessageBoxButtons.OK)
         Else
-            Dim fileName As String = RunPreviewBox.Text
+            Dim fileName As String = TabControl1.SelectedTab.Text
             Dim fileInformation As FileInfo = Findfileinfo(fileName)
-            Dim filePath As String = fileInformation.DirectoryName
+            If fileInformation Is Nothing Then
+                fileInformation = New FileInfo(RunPreviewBox.Text)
+            End If
+            Dim filePath As String = fileInformation.FullName
             Dim filenameWithoutExtention = fileInformation.Name.Replace(".cpp", "")
 
-            Dim command = "PowerShell -NoExit cd " + fileInformation.DirectoryName + " ; g++ " + fileName + " -o " + filenameWithoutExtention + " ; " + fileInformation.DirectoryName + "\" + filenameWithoutExtention
-            RunPreviewBox.Text = fileName
+            Dim command = commandbuilder(fileInformation, fileInformation.Extension)
+            RunPreviewBox.Text = fileInformation.FullName
+
             Shell(command, AppWinStyle.NormalFocus)
 
         End If
 
 
     End Sub
+
+    Private Function commandbuilder(ByVal fileinfo As FileInfo, ByVal ext As String) As String
+
+        Dim fileNameWithoutExtention = fileinfo.Name.Replace(fileinfo.Extension, "")
+
+        Select Case ext
+            Case ".cpp"
+                Return "PowerShell  cd '" + fileinfo.DirectoryName + "' ; g++ " + fileinfo.Name + " -o " + fileNameWithoutExtention + " ; " + "start " + fileNameWithoutExtention + ".exe"
+            Case ".java"
+                Return "PowerShell -NoExit cd '" + fileinfo.DirectoryName + "' ; javac " + fileinfo.Name + "; java " + fileNameWithoutExtention
+            Case ".html"
+                Return "PowerShell cd '" + fileinfo.DirectoryName + "' ; start " + fileinfo.Name
+            Case ".c"
+                Return "PowerShell cd '" + fileinfo.DirectoryName + "' ; gcc " + fileinfo.Name + " -o " + fileNameWithoutExtention + " ; " + " start " + fileNameWithoutExtention + ".exe"
+            Case Else
+                Return "PowerShell -NoExit  echo 'Cant Run this type of file '"
+        End Select
+
+    End Function
+
+
+
 
 
 
@@ -306,7 +309,7 @@ Public Class Form1
 
     Private Sub tabselect(sender As Object, e As EventArgs) Handles TabControl1.Selected
         If OpenTabs.Count <> 0 Then
-            RunPreviewBox.Text = Findfileinfo(TabControl1.SelectedTab.Text).FullName
+            RunPreviewBox.Text = TabControl1.SelectedTab.Text
         Else
             RunPreviewBox.Text = ""
         End If

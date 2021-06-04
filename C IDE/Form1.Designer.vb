@@ -28,14 +28,12 @@ Partial Class Form1
         Me.filesTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenDirectory = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NewFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.Save = New System.Windows.Forms.ToolStripMenuItem()
         Me.settings = New System.Windows.Forms.ToolStripMenuItem()
         Me.hideherracyOption = New System.Windows.Forms.ToolStripMenuItem()
         Me.quit = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.NewFIleTool = New System.Windows.Forms.ToolStripMenuItem()
-        Me.BuildTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.RunTool = New System.Windows.Forms.ToolStripMenuItem()
         Me.RunPreviewBox = New System.Windows.Forms.ToolStripTextBox()
         Me.Herracy = New System.Windows.Forms.TreeView()
@@ -63,7 +61,7 @@ Partial Class Form1
         '
         Me.ToolBar.BackColor = System.Drawing.SystemColors.MenuHighlight
         Me.ToolBar.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.ToolBar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.filesTool, Me.SaveTool, Me.NewFIleTool, Me.BuildTool, Me.RunTool, Me.RunPreviewBox})
+        Me.ToolBar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.filesTool, Me.SaveTool, Me.NewFIleTool, Me.RunTool, Me.RunPreviewBox})
         Me.ToolBar.Location = New System.Drawing.Point(0, 0)
         Me.ToolBar.Name = "ToolBar"
         Me.ToolBar.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional
@@ -76,7 +74,7 @@ Partial Class Form1
         Me.filesTool.BackColor = System.Drawing.SystemColors.MenuBar
         Me.filesTool.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.filesTool.CheckOnClick = True
-        Me.filesTool.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenDirectory, Me.OpenFile, Me.NewFile, Me.Save, Me.settings})
+        Me.filesTool.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenDirectory, Me.OpenFile, Me.Save, Me.settings})
         Me.filesTool.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point)
         Me.filesTool.Image = CType(resources.GetObject("filesTool.Image"), System.Drawing.Image)
         Me.filesTool.Name = "filesTool"
@@ -102,15 +100,6 @@ Partial Class Form1
         Me.OpenFile.Padding = New System.Windows.Forms.Padding(1)
         Me.OpenFile.Size = New System.Drawing.Size(201, 26)
         Me.OpenFile.Text = "Open FIles"
-        '
-        'NewFile
-        '
-        Me.NewFile.BackColor = System.Drawing.SystemColors.MenuBar
-        Me.NewFile.ForeColor = System.Drawing.Color.Black
-        Me.NewFile.Image = CType(resources.GetObject("NewFile.Image"), System.Drawing.Image)
-        Me.NewFile.Name = "NewFile"
-        Me.NewFile.Size = New System.Drawing.Size(199, 26)
-        Me.NewFile.Text = "New File"
         '
         'Save
         '
@@ -158,17 +147,6 @@ Partial Class Form1
         Me.NewFIleTool.Margin = New System.Windows.Forms.Padding(5, 0, 0, 0)
         Me.NewFIleTool.Name = "NewFIleTool"
         Me.NewFIleTool.Size = New System.Drawing.Size(34, 27)
-        '
-        'BuildTool
-        '
-        Me.BuildTool.AutoToolTip = True
-        Me.BuildTool.BackColor = System.Drawing.SystemColors.MenuBar
-        Me.BuildTool.ForeColor = System.Drawing.SystemColors.MenuBar
-        Me.BuildTool.Image = CType(resources.GetObject("BuildTool.Image"), System.Drawing.Image)
-        Me.BuildTool.Margin = New System.Windows.Forms.Padding(5, 0, 0, 0)
-        Me.BuildTool.Name = "BuildTool"
-        Me.BuildTool.Size = New System.Drawing.Size(34, 27)
-        Me.BuildTool.ToolTipText = "Build your file (Shift + F6)"
         '
         'RunTool
         '
@@ -340,7 +318,6 @@ Partial Class Form1
     Friend WithEvents ToolBar As MenuStrip
     Friend WithEvents filesTool As ToolStripMenuItem
     Friend WithEvents OpenFile As ToolStripMenuItem
-    Friend WithEvents NewFile As ToolStripMenuItem
     Friend WithEvents Save As ToolStripMenuItem
     Friend WithEvents SaveTool As ToolStripMenuItem
     Friend WithEvents Herracy As TreeView
@@ -353,7 +330,6 @@ Partial Class Form1
     Friend WithEvents FolderBrowserDialog1 As FolderBrowserDialog
     Friend WithEvents ErrorProvider1 As ErrorProvider
     Friend WithEvents OpenDirectory As ToolStripMenuItem
-    Friend WithEvents BuildTool As ToolStripMenuItem
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents ImageList1 As ImageList
     Friend WithEvents closeTabContextMenuItem As ToolStripMenuItem
