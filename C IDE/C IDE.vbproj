@@ -6,18 +6,14 @@
     <RootNamespace>C_IDE</RootNamespace>
     <StartupObject>C_IDE.Form1</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Iconka-Meow-Cat-purr.ico</ApplicationIcon>
+    <AssemblyName>CAT</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <Import Include="System.Data" />
     <Import Include="System.Drawing" />
     <Import Include="System.Windows.Forms" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.PowerShell.Native" Version="7.2.0-preview.2" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.0-preview.5" />
-    <PackageReference Include="System.Management.Automation" Version="7.2.0-preview.1" />
   </ItemGroup>
 
   <ItemGroup>
