@@ -431,12 +431,14 @@ Class FileHandler
     Public Directory_name As String
     Public openDirectory As IO.DirectoryInfo
     Public subdirectory As IO.DirectoryInfo()
-    Public directoryFiles As IO.FileInfo()
+    Public directoryFiles As List(Of FileInfo)
+
     Public Sub New(ByVal fullPath As String)
         openDirectory = New DirectoryInfo(fullPath)
         Directory_name = openDirectory.Name
         subdirectory = openDirectory.GetDirectories()
-        directoryFiles = openDirectory.GetFiles()
+        ' directoryFiles = openDirectory.GetFiles()
+        directoryFiles = New List(Of FileInfo)
 
     End Sub
     Public Sub CreateTreeView(ByRef localTree As TreeView)
@@ -444,48 +446,70 @@ Class FileHandler
         localTree.Dock = DockStyle.Left
         Dim nodecount = localTree.GetNodeCount(False)
         localTree.CollapseAll()
-        Dim file As FileInfo
-        Dim obj As Form1 = New Form1()
-        localTree.Nodes.Add(Directory_name)
-        localTree.Nodes(nodecount).ImageIndex = 7
-        localTree.Nodes(nodecount).SelectedImageIndex = 7
-        ' localTree.Nodes(nodecount).ContextMenuStrip = obj.directoryOptions
-
-        '   localTree.Nodes(nodecount).Nodes.Add(file.Name)
-        For Each file In directoryFiles
-
-            Dim ext = file.Extension
-            Dim treenode = New TreeNode()
-            Dim imageindex As Integer
-            treenode.Text = file.Name
-            Select Case ext
-                Case ".cpp"
-                    imageindex = 0
-                Case ".java"
-                    imageindex = 1
-                Case ".html"
-                    imageindex = 2
-                Case ".js"
-                    imageindex = 3
-                Case ".json"
-                    imageindex = 4
-                Case ".txt"
-                    imageindex = 5
-                Case ".py"
-                    imageindex = 6
-                Case ".c"
-                    imageindex = 7
-                Case ".exe"
-                    imageindex = 8
-                Case Else
-                    imageindex = 9
-            End Select
-
-            localTree.Nodes(nodecount).Nodes.Add(file.Name, file.Name, imageindex, imageindex)
-
-        Next
+        Dim treenode As TreeNode = New TreeNode()
+        localTree.Nodes.Add(superLoader(treenode, openDirectory))
 
     End Sub
+
+
+    Public Function superLoader(ByRef treenode As TreeNode, ByVal directory As DirectoryInfo) As TreeNode
+
+        treenode.Text = directory.Name
+        treenode.ImageIndex = 7
+        treenode.SelectedImageIndex = 7
+        Dim files As FileInfo() = directory.GetFiles()
+        Dim count As Integer = 0
+        Dim file As FileInfo
+        If files.Count <> 0 Then
+
+
+            For Each file In files
+
+                count += count
+                Dim ext = file.Extension
+                directoryFiles.Add(file)
+                Dim imageindex As Integer
+
+                Select Case ext
+                    Case ".cpp"
+                        imageindex = 0
+                    Case ".java"
+                        imageindex = 1
+                    Case ".html"
+                        imageindex = 2
+                    Case ".js"
+                        imageindex = 3
+                    Case ".json"
+                        imageindex = 4
+                    Case ".txt"
+                        imageindex = 5
+                    Case ".py"
+                        imageindex = 6
+                    Case ".c"
+                        imageindex = 7
+                    Case ".exe"
+                        imageindex = 8
+                    Case Else
+                        imageindex = 9
+                End Select
+
+                treenode.Nodes.Add(file.Name, file.Name, imageindex, imageindex)
+
+            Next
+        End If
+        Dim subdir As DirectoryInfo() = directory.GetDirectories()
+        If subdir.Count <> 0 Then
+            Dim subd As DirectoryInfo
+            For Each subd In subdir
+                Dim newTreenode As TreeNode = New TreeNode
+                treenode.Nodes.Add(superLoader(newTreenode, subd))
+
+            Next
+
+        End If
+
+        Return treenode
+    End Function
 
     Public Sub updateTreeView(ByRef herracy As TreeView, filename As String)
 
